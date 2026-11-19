@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="it"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Consegna 5 · Laboratorio 2: una variante di Pong</title><style>
+:root{--bg:#F7F3EA;--fg:#1E2732;--muted:#5b6573;--acc:#B5471F;--card:#fffdf8;--line:#d9d0bf;--code:#EFE4D2;--ok:#2f7d4f}
+@media (prefers-color-scheme:dark){:root{--bg:#0f1b2d;--fg:#efeae0;--muted:#8fa3bf;--acc:#7dd3fc;--card:#16263d;--line:#2e4466;--code:#1d3050;--ok:#7ee0a1}}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--fg);font:17px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif}
+.wrap{display:grid;grid-template-columns:260px minmax(0,780px);gap:40px;max-width:1120px;margin:0 auto;padding:32px 16px 80px}
+nav{position:sticky;top:16px;align-self:start;max-height:calc(100vh - 32px);overflow:auto;font-size:15px}
+nav ul{list-style:none;margin:0;padding:0}nav ul ul{padding-left:14px}nav li{margin:6px 0}
+nav a{color:var(--muted);text-decoration:none}nav a:hover{color:var(--acc)}
+h1{font:600 34px/1.15 Georgia,"Times New Roman",serif;margin:0 0 16px}
+h2{font:600 26px/1.2 Georgia,"Times New Roman",serif;margin:44px 0 10px;padding-top:14px;border-top:2px solid var(--line)}
+h3{font-size:20px;margin:30px 0 8px;color:var(--acc)}
+a{color:var(--acc)}
+code{font:0.92em ui-monospace,Menlo,Consolas,monospace;background:var(--code);padding:1px 5px;border-radius:5px}
+pre{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px 16px;overflow:auto}pre code{background:none;padding:0}
+table{border-collapse:collapse;margin:12px 0}th,td{border:1px solid var(--line);padding:6px 12px;text-align:left}
+ol li,ul li{margin:8px 0}
+.pc{color:var(--ok)}
+ol.passi{list-style:none;padding-left:0;counter-reset:p}
+ol.passi>li{counter-increment:p;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px 14px 12px 60px;position:relative}
+ol.passi>li::before{content:counter(p);position:absolute;left:38px;top:12px;font-weight:700;color:var(--acc)}
+ol.passi>li input{position:absolute;left:10px;top:15px;width:18px;height:18px}
+ol.passi>li.fatto{opacity:.55}
+@media (max-width:820px){.wrap{grid-template-columns:1fr}nav{position:static;max-height:none}}
+@media print{nav{display:none}.wrap{display:block}}
+</style></head>
+<body><div class="wrap"><nav aria-label="Indice"><div class="toc">
+<ul>
+<li><a href="#da-dove-partite">Da dove partite</a></li>
+<li><a href="#cosa-fate">Cosa fate</a><ul>
+<li><a href="#le-tre-varianti">Le tre varianti</a></li>
+</ul>
+</li>
+<li><a href="#i-passi-variante-per-variante">I passi, variante per variante</a><ul>
+<li><a href="#variante-1-la-nebbia">Variante 1 · La nebbia</a></li>
+<li><a href="#variante-2-le-stelle">Variante 2 · Le stelle</a></li>
+<li><a href="#variante-3-pong-su-quattro-lati">Variante 3 · Pong su quattro lati</a></li>
+</ul>
+</li>
+<li><a href="#le-regole">Le regole</a></li>
+<li><a href="#il-test-del-contratto">Il test del contratto</a></li>
+<li><a href="#come-provate">Come provate</a></li>
+<li><a href="#come-consegnate">Come consegnate</a></li>
+</ul>
+</div>
+</nav><main><h1 id="consegna-5-laboratorio-2-una-variante-di-pong">Consegna 5 · Laboratorio 2: una variante di Pong</h1>
+<p><strong>Scadenza: domenica 22 novembre 2026, alle 23:59.</strong></p>
+<p>Con tutti i test verdi alla scadenza prendete un gettone.</p>
+<h2 id="da-dove-partite">Da dove partite</h2>
+<p>Il repository si chiama <code>lab2-</code> seguito dal vostro nome utente GitHub.</p>
+<p>Il mercato crea il repository dal Pong della consegna 4 che avete comprato all'asta del giro 2. Chi non ha comprato riceve un Pong sorteggiato.</p>
+<p>Il repository contiene il codice del venditore com'era alla scadenza della consegna 4 (domenica 15 novembre, 23:59). L'invito arriva per email dopo la chiusura dell'asta, martedì 17 novembre sera.</p>
+<p>Il codice non è vostro. Prima di cambiare l’intestazione o il contratto di un metodo, cercate tutto il codice che lo usa: in VS Code fate clic destro sul nome del metodo e scegliete «Find All References».</p>
+<h2 id="cosa-fate">Cosa fate</h2>
+<ol>
+<li>Scegliete una delle tre varianti qui sotto.</li>
+<li>Scrivete il numero della variante nel file <code>VARIANTE.txt</code>, nella cartella principale del repository. Il file contiene solo il numero: <code>1</code>, <code>2</code> o <code>3</code>.</li>
+<li>Realizzate la variante nel Pong del repository.</li>
+<li>Per ogni ostacolo nuovo, scrivete in <code>test/ostacoli</code> la sua sottoclasse del test del contratto (v. sotto).</li>
+</ol>
+<h3 id="le-tre-varianti">Le tre varianti</h3>
+<p>Le tre varianti sono le più votate nel mercato. Ogni variante entra nei livelli: il <code>MotoreDeiLivelli</code> decide da quale livello c'è, e quanto pesa.</p>
+<p>Nello zip <code>L12-laboratorio2.zip</code> (Teams, cartella del laboratorio 2) c'è una cartella per ogni variante. Dentro ci sono le classi nuove, con i contratti e i corpi dei metodi vuoti, e i test ufficiali della variante. Copiate nel repository le cartelle <code>src</code> e <code>test</code> della variante che scegliete.</p>
+<p><strong>Variante 1 · La nebbia</strong> (proposta da Sandri)</p>
+<p>Nel gioco: dal livello 3 una striscia di nebbia copre il centro del campo. Quando la palla entra nella nebbia sparisce, quando esce ricompare. Gli ostacoli e le racchette nella nebbia si vedono.</p>
+<p>Cosa scrivete:</p>
+<ul>
+<li>la classe <code>nebbia.Nebbia</code>, dallo zip: campi e corpi dei metodi. Il contratto è nei commenti;</li>
+<li>in <code>Livello</code>, un componente in più: <code>Nebbia nebbia</code>;</li>
+<li>nel <code>MotoreDeiLivelli</code>: nessuna nebbia ai livelli 1 e 2; ai livelli 3, 4 e 5 una striscia larga il 30%, il 35% e il 40% del campo;</li>
+<li>nello <code>Schermo</code>: la nebbia grigia sotto gli ostacoli e le racchette; la palla non si disegna quando il suo centro è nella nebbia.</li>
+</ul>
+<p>Test della variante: 8, in <code>test/nebbia/NebbiaTest.java</code>.</p>
+<p><strong>Variante 2 · Le stelle</strong> (proposta da Fain)</p>
+<p>Nel gioco: si gioca con le vite, come nella consegna 3. Vincendo una partita si passa al livello dopo; perdendo si perde una vita. Ogni tanto, nella corsia della vostra racchetta, compare una stella per qualche secondo. Se la racchetta la tocca, la stella è raccolta. Con 5 stelle si riguadagna una vita, ma non si va oltre le vite iniziali. Più si sale di livello, meno dura una stella.</p>
+<p>Cosa scrivete:</p>
+<ul>
+<li>la classe <code>pong.Livelli</code>, dallo zip: è la classe della consegna 3 con un metodo in più, <code>guadagnaVita</code>. Potete ripartire dalla vostra consegna 3. Attenzione ai nomi: <code>Livelli</code>, con la i, sa a quale livello siete e quante vite avete; <code>Livello</code>, con la o, è il record con i dati di un solo livello;</li>
+<li>le classi <code>stelle.Stella</code> (una stella: dove sta, quanto dura, se è raccolta) e <code>stelle.Raccolta</code> (il conto delle stelle), dallo zip;</li>
+<li>in <code>Livello</code>, un componente in più: <code>int durataStella</code>, in fotogrammi (60 fotogrammi sono un secondo);</li>
+<li>nel <code>MotoreDeiLivelli</code>: una stella dura 300 fotogrammi al livello 1, e 30 in meno a ogni livello;</li>
+<li>nella <code>Partita</code> e nello <code>Schermo</code>: il gioco a livelli con le vite (i tasti da 1 a 5 non servono più), le stelle che compaiono nella vostra corsia, la raccolta, le vite e le stelle scritte sullo schermo.</li>
+</ul>
+<p>Test della variante: 38. Sono 24 in <code>test/pong/LivelliTest.java</code> (i test della consegna 3 e 6 di <code>guadagnaVita</code>) e 14 in <code>test/stelle/StelleTest.java</code>.</p>
+<p><strong>Variante 3 · Pong su quattro lati</strong> (dall'idea di Cromaz, cambiata: l'idea votata era «Pong a più giocatori»)</p>
+<p>Nel gioco: i giocatori restano due, voi e il giocatore automatico. Ognuno gioca su un bordo del campo: a sinistra, a destra, in alto o in basso. Sui due bordi dove non c'è nessuno c'è il muro, e la palla rimbalza. Un punto si segna quando la palla esce dal bordo dell'altro giocatore. Il livello decide i bordi:</p>
+<table>
+<thead>
+<tr>
+<th>Livello</th>
+<th>Voi</th>
+<th>Il giocatore automatico</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>sinistra</td>
+<td>destra</td>
+</tr>
+<tr>
+<td>2</td>
+<td>basso</td>
+<td>alto</td>
+</tr>
+<tr>
+<td>3</td>
+<td>sinistra</td>
+<td>alto</td>
+</tr>
+<tr>
+<td>4</td>
+<td>basso</td>
+<td>destra</td>
+</tr>
+<tr>
+<td>5</td>
+<td>alto</td>
+<td>sinistra</td>
+</tr>
+</tbody>
+</table>
+<p>In alto e in basso la racchetta è orizzontale e si muove con le frecce a sinistra e a destra.</p>
+<p>Cosa scrivete:</p>
+<ul>
+<li>l'enumerazione <code>pong.Bordo</code>, dallo zip: <code>SINISTRA</code>, <code>DESTRA</code>, <code>ALTO</code>, <code>BASSO</code>, con i metodi <code>orizzontale()</code> e <code>opposto()</code>. <code>Bordo</code> dice <em>dove</em> gioca un giocatore; <code>Lato</code> dice ancora <em>chi</em> è (<code>SINISTRA</code> la persona, <code>DESTRA</code> il giocatore automatico). Con i quattro lati i nomi <code>SINISTRA</code> e <code>DESTRA</code> di <code>Lato</code> non sono più nomi felici: la persona può giocare in basso o in alto. Li teniamo così per non cambiare troppo codice;</li>
+<li>in <code>Racchetta</code>: il costruttore <code>Racchetta(Bordo bordo, Campo campo)</code> (la racchetta al centro del suo bordo, a 30 pixel dal bordo; <code>IllegalArgumentException</code> con un argomento <code>null</code>), il metodo <code>getBordo()</code>; su <code>ALTO</code> e <code>BASSO</code> larghezza e altezza si scambiano e <code>muovi</code> sposta la racchetta in orizzontale (<code>SU</code> verso sinistra, <code>GIU</code> verso destra);</li>
+<li>in <code>Palla</code>: <code>lancia(double x, double y, Bordo verso, double velocita)</code>; il rimbalzo sulla racchetta orizzontale. Attenzione: una palla che arriva quasi di lato non deve rallentare (c'è un test);</li>
+<li>in <code>Livello</code>, due componenti in più: <code>Bordo bordoUmano</code> e <code>Bordo bordoAutomatico</code>; nel <code>MotoreDeiLivelli</code> la tabella qui sopra;</li>
+<li>nella <code>Partita</code>: le racchette sui bordi del livello, il metodo <code>isMuro(Bordo)</code>, i rimbalzi sui muri, i punti;</li>
+<li>nella <code>Partita</code>, due nomi nuovi. Con i quattro lati la racchetta della persona può stare in basso: il nome <code>getRacchettaSinistra()</code> non dice più la verità. Rinominate <code>getRacchettaSinistra()</code> in <code>getRacchettaUmana()</code> e <code>getRacchettaDestra()</code> in <code>getRacchettaAutomatica()</code>. Usate Rename Symbol: fate clic destro sul nome del metodo e scegliete Rename Symbol (tasto F2). VS Code cambia il nome in tutte le classi che usano il metodo. <code>QuattroLatiTest</code> usa i nomi nuovi. <code>Lato</code> invece non cambia: <code>Punteggio</code> e i suoi test lo usano;</li>
+<li>nel <code>GiocatoreAutomatico</code> e nel <code>GiocatoreTastiera</code>: la racchetta orizzontale.</li>
+</ul>
+<p>Test della variante: 18, in <code>test/pong/QuattroLatiTest.java</code>.</p>
+<h2 id="i-passi-variante-per-variante">I passi, variante per variante</h2>
+<p>Fate i passi nell'ordine. Dopo ogni passo lanciate i test. Quando i test compilano, i 53 test di prima restano verdi: dicono che non avete rotto niente.</p>
+<p>Prima di cambiare una classe scritta da un altro, guardate chi la usa: fate clic destro sul nome della classe e scegliete Find All References. Ogni riga dell'elenco è un punto del codice che usa quella classe.</p>
+<h3 id="variante-1-la-nebbia">Variante 1 · La nebbia</h3>
+<ol>
+<li>In <code>Livello</code> aggiungete il componente <code>Nebbia nebbia</code>. Nel <code>MotoreDeiLivelli</code>: nessuna nebbia ai livelli 1 e 2; ai livelli 3, 4 e 5 una striscia larga il 30%, il 35% e il 40% del campo. <strong class="pc">Punto di controllo: ora i test compilano.</strong></li>
+<li>Scrivete i campi e i corpi dei metodi di <code>Nebbia</code>. <strong class="pc">Punto di controllo: <code>NebbiaTest</code>, 8 test verdi.</strong></li>
+<li>Nello <code>Schermo</code> disegnate la striscia grigia prima degli ostacoli e delle racchette: così restano visibili. Non disegnate la palla quando il suo centro è nella nebbia.</li>
+<li>Lanciate il gioco. Premete 3 (il livello 3), poi SPAZIO (la palla parte). <strong class="pc">Punto di controllo: la palla sparisce al centro del campo.</strong></li>
+</ol>
+<p>Se avete finito: con i giocatori in alto e in basso, come nella variante 3, la striscia verticale nasconde ancora la palla fra i due giocatori? Disegnate sul foglio la nebbia giusta.</p>
+<h3 id="variante-2-le-stelle">Variante 2 · Le stelle</h3>
+<ol>
+<li>In <code>Livello</code> aggiungete il componente <code>int durataStella</code>, in fotogrammi (60 fotogrammi sono un secondo). Nel <code>MotoreDeiLivelli</code>: 300 al livello 1, 30 in meno a ogni livello. <strong class="pc">Punto di controllo: ora i test compilano.</strong></li>
+<li>Scrivete i campi e i corpi dei metodi di <code>Livelli</code>. Potete copiarli dalla classe <code>Livelli</code> della vostra consegna 3, nel repository <code>lab1-…</code>. Scrivete anche <code>guadagnaVita</code>. <strong class="pc">Punto di controllo: <code>LivelliTest</code>, 24 test verdi.</strong></li>
+<li>Scrivete <code>Stella</code> e <code>Raccolta</code>. <strong class="pc">Punto di controllo: <code>StelleTest</code>, 14 test verdi.</strong></li>
+<li>Nella <code>Partita</code> usate <code>Livelli</code> con 3 vite: vincendo si passa al livello dopo, perdendo si perde una vita. I tasti da 1 a 5 non servono più. Fate comparire ogni tanto una stella nella corsia della vostra racchetta. Quando la racchetta tocca la stella, raccoglietela. Con 5 stelle chiamate <code>guadagnaVita</code>.</li>
+<li>Nello <code>Schermo</code> disegnate la stella, le vite e le stelle raccolte. <strong class="pc">Punto di controllo: giocate, raccogliete una stella e il conto sullo schermo sale.</strong></li>
+</ol>
+<p>Se avete finito: rispondete alla domanda sulla stella, alla fine della sezione «Il test del contratto».</p>
+<h3 id="variante-3-pong-su-quattro-lati">Variante 3 · Pong su quattro lati</h3>
+<p>In questa variante i test compilano solo dopo il passo 5.</p>
+<ol>
+<li>Scrivete <code>Bordo</code>. In <code>Livello</code> aggiungete i componenti <code>Bordo bordoUmano</code> e <code>Bordo bordoAutomatico</code>. Nel <code>MotoreDeiLivelli</code> scrivete la tabella dei bordi della variante 3, qui sopra.</li>
+<li>In <code>Racchetta</code> scrivete il costruttore <code>Racchetta(Bordo, Campo)</code> e <code>getBordo()</code>. In alto e in basso la racchetta è orizzontale.</li>
+<li>In <code>Palla</code> scrivete <code>lancia</code> verso un <code>Bordo</code> e il rimbalzo sulla racchetta orizzontale. Quando la palla arriva quasi parallela alla racchetta, dopo il colpo non deve rallentare: un test lo controlla.</li>
+<li>Nella <code>Partita</code> mettete le racchette sui bordi del livello e scrivete <code>isMuro</code>, i rimbalzi sui muri e i punti. Con Rename Symbol (F2) rinominate <code>getRacchettaSinistra</code> in <code>getRacchettaUmana</code> e <code>getRacchettaDestra</code> in <code>getRacchettaAutomatica</code>.</li>
+<li>In <code>GiocatoreTastiera</code>, con la racchetta orizzontale, la freccia sinistra dà <code>SU</code> e la destra <code>GIU</code>. In <code>GiocatoreAutomatico</code> la racchetta orizzontale segue la palla lungo x. <strong class="pc">Punto di controllo: ora i test compilano.</strong></li>
+<li><strong class="pc">Punto di controllo: <code>QuattroLatiTest</code>, 18 test verdi.</strong> Giocate ai livelli da 2 a 5.</li>
+</ol>
+<p>Se avete finito: nel <code>Punteggio</code> la vostra racchetta è ancora <code>Lato.SINISTRA</code>, anche quando giocate in basso. Fate Find All References su <code>Lato</code>: quante classi e quanti test cambierebbero, se rinominaste anche <code>Lato</code>?</p>
+<h2 id="le-regole">Le regole</h2>
+<p>Le regole le controllano i test. Un test rosso alla scadenza vuol dire niente gettone. Non ci sono altri controlli.</p>
+<ol>
+<li><strong>I 35 test della consegna 4 restano verdi.</strong> Il Pong del venditore li passava alla scadenza della consegna 4. Una variante che li rompe non va bene. Quindi non cambiate le intestazioni dei metodi che quei test usano.</li>
+<li><strong>Ogni ostacolo ha il suo test del contratto.</strong> Ogni classe in <code>src</code> che realizza <code>Ostacolo</code>, e che si crea con <code>new</code>, ha in <code>test/ostacoli</code> una sottoclasse di <code>ContrattoOstacoloTest</code>. Le classi astratte non contano. Il test <code>OgniOstacoloHaIlTestDelContrattoTest</code> lo controlla.</li>
+<li><strong><code>VARIANTE.txt</code> dice quale variante realizzate.</strong> Il test <code>SceltaDellaVarianteTest</code> lo controlla. GitHub legge il numero e scarica i test ufficiali di quella variante.</li>
+<li><strong>I test della variante scelta sono verdi.</strong> Variante 1: <code>NebbiaTest</code>; variante 2: <code>LivelliTest</code> e <code>StelleTest</code>; variante 3: <code>QuattroLatiTest</code>.</li>
+</ol>
+<p>Se il Pong che avete ricevuto ha già un test della consegna 4 rosso, lo correggete: anche quel test conta.</p>
+<h2 id="il-test-del-contratto">Il test del contratto</h2>
+<p><code>ContrattoOstacoloTest</code> è una classe di test astratta: è già scritta, in <code>test/ostacoli</code>. Contiene le promesse di <code>Ostacolo</code>, in quattro test:</p>
+<ul>
+<li><code>areaEColoreNonSonoMaiNull</code></li>
+<li><code>colpireUnOstacoloNonRottoNonLanciaEccezioni</code></li>
+<li><code>colpireUnRottoLanciaIllegalStateException</code></li>
+<li><code>unaVoltaRottoRestaRotto</code></li>
+</ul>
+<p>Una sottoclasse dice quale ostacolo provare. JUnit esegue i quattro test nella sottoclasse.</p>
+<p>Ci sono già le sottoclassi per il fisso, il fragile, il mobile e l'esplosivo. Per un ostacolo nuovo scrivete una sottoclasse come questa:</p>
+<pre><code class="language-java">package ostacoli;
+
+import geometria.Rettangolo;
+
+class FragileComeOstacoloTest extends ContrattoOstacoloTest {
+    @Override
+    Ostacolo nuovoOstacolo(Rettangolo area) {
+        return new OstacoloFragile(area, 2);
+    }
+}
+</code></pre>
+<p>Il nome della classe è il nome dell'ostacolo seguito da <code>ComeOstacoloTest</code>.</p>
+<p>Un ostacolo nuovo può promettere anche altro: per esempio «non esce mai dai limiti». Il test del contratto di <code>Ostacolo</code> non lo controlla. Per controllarlo, scrivete un test vostro.</p>
+<p>Nessuna delle tre varianti chiede un ostacolo nuovo: se non ne aggiungete, la regola 2 non vi chiede niente. Una domanda per voi: una stella ha un'area e uno stato «raccolta», come un ostacolo ha un'area e uno stato «rotto». È un <code>Ostacolo</code>? Rileggete il contratto di <code>Ostacolo</code> prima di rispondere.</p>
+<h2 id="come-provate">Come provate</h2>
+<ol>
+<li>Aprite la cartella del repository in VS Code.</li>
+<li>Lanciate tutti i test dalla barra Testing (il triangolo in alto).</li>
+<li>Prima di cominciare: i test della consegna 4 e del contratto sono verdi, se il Pong del venditore era verde. <code>SceltaDellaVarianteTest</code> è rosso finché non scrivete <code>VARIANTE.txt</code>.</li>
+<li>Copiate dallo zip <code>L12-laboratorio2.zip</code> le cartelle <code>src</code> e <code>test</code> della variante. I test della variante non compilano o sono rossi, finché non la realizzate. Finché un test non compila, VS Code non lancia nessun test: cominciate dalle aggiunte a <code>Livello</code> e al <code>MotoreDeiLivelli</code>.</li>
+<li>Alla fine tutti i test sono verdi.</li>
+</ol>
+<p>I test sono 53 più quelli della variante: 35 della consegna 4, 16 del contratto (4 test per 4 ostacoli), 1 sulla regola del test del contratto, 1 sulla scelta della variante. Con la variante 1 sono 61, con la 2 sono 91, con la 3 sono 71. Ogni ostacolo nuovo con il suo test del contratto aggiunge 4 test.</p>
+<h2 id="come-consegnate">Come consegnate</h2>
+<ol>
+<li>Fate commit e push sul repository <code>lab2-…</code>.</li>
+<li>Su GitHub, nella scheda Actions, guardate l'ultima esecuzione: deve essere verde. Prima di compilare, GitHub mette i test ufficiali, compresi quelli della vostra variante, al posto dei vostri file con lo stesso nome: un test ufficiale cambiato non conta.</li>
+<li>Conta l'ultimo commit che il mercato vede alla scadenza, domenica 22 novembre alle 23:59. Non conta la data scritta nel commit.</li>
+</ol>
+<p>Dopo la scadenza il codice non va all'asta: la consegna 6 parte da un repository nuovo.</p></main></div><script>
+(function(){var k='Consegna-5-Laboratorio-2-una-variante-di-Pong';var st={};try{st=JSON.parse(localStorage.getItem(k)||'{}')}catch(e){}
+var h=document.getElementById('i-passi-variante-per-variante');if(!h)return;var n=0;
+for(var el=h.nextElementSibling;el&&el.tagName!=='H2';el=el.nextElementSibling){if(el.tagName!=='OL')continue;el.className='passi';
+[].forEach.call(el.children,function(li){var id='p'+(n++);var c=document.createElement('input');c.type='checkbox';c.setAttribute('aria-label','Passo fatto');
+c.checked=!!st[id];if(c.checked)li.className='fatto';c.onchange=function(){st[id]=c.checked;li.className=c.checked?'fatto':'';try{localStorage.setItem(k,JSON.stringify(st))}catch(e){}};
+li.insertBefore(c,li.firstChild)})}})();
+</script></body></html>
